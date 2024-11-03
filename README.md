@@ -1,4 +1,4 @@
-# DevTools V1.0
+# DevTools
 
 DevTools is a multifunctional tool that allows users to:
 1. Search for subdomains using the `crt.sh` database.
