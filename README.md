@@ -30,6 +30,6 @@ This tool requires Python and the `aiohttp` library. Make sure Python 3.7 or hig
 
 ## LICENSE
 
-This tool was developed by [kdandy](https://github.com/kdandy/devtools/LICENSE) and is available on GitHub. Please use it responsibly and only for purposes that comply with service policies.
+This tool was developed by [kdandy](https://github.com/kdandy/devtools/blob/main/LICENSE) and is available on GitHub. Please use it responsibly and only for purposes that comply with service policies.
 
    
