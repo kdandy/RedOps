@@ -24,9 +24,6 @@ This tool requires Python and the `aiohttp` library. Make sure Python 3.7 or hig
 1. **Run the program**:
    ```bash
    python3 devtools.py
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
 
 ## LICENSE
 
