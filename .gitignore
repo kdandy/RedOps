@@ -1,0 +1,74 @@
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore virtual environment directory
+venv/
+env/
+.venv/
+.pyvenv/
+pip-selfcheck.json
+
+# Ignore VS Code workspace settings (if using VS Code)
+.vscode/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore log and output files
+*.log
+*.out
+*.txt
+*.csv
+*.json
+
+# Ignore specific output file for subdomains
+findsub.text
+open_ports.txt
+found_directories.txt
+directory_listing_enabled.txt
+
+# Ignore OS specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+*.manifest
+*.spec
+
+# Ignore mypy, Pyre, Pyright type checker cache
+.mypy_cache/
+.pyre/
+.pyright/
+
+# Ignore pytest cache
+.pytest_cache/
+
+# Ignore other editor or IDE configurations
+.idea/
+.project/
+*.sublime-workspace
+*.sublime-project
+
+# Ignore temporary and backup files
+*.swp
+*.swo
+*.bak
+*.tmp
+~$*
+
+# Ignore coverage and test artifacts
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+.installed.cfg
+.venv
+__pypackages__/
+.cache/
