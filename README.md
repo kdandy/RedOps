@@ -113,6 +113,17 @@ This tool requires Python 3.7 or higher and the `aiohttp` library. Make sure Pyt
    ```bash
    pip install -r requirements.txt
 
+### Installation python3-venv
+1. **Install python3-venv (if not installed)**:
+   ```bash
+   sudo apt install python3-venv
+   python3 -m venv myenv
+   source myenv/bin/activate
+   pip install -r requirements.txt
+2. **Once done, you can deactivate the environment by**:
+   ```bash
+   deactivate
+
 ## Usage
 1. **Run the program**:
    ```bash
