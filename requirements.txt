@@ -1,12 +1,5 @@
 aiohttp
-asyncio
-socket
-ssl
-urllib3
-os
 dnspython
-scapy
-concurrent
-ThreadPoolExecutor
 async-timeout
 pytest
+scapy
