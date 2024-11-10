@@ -2,4 +2,3 @@ aiohttp
 dnspython
 async-timeout
 pytest
-scapy
