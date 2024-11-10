@@ -13,35 +13,35 @@ os.makedirs("output", exist_ok=True)
 
 def display_banner():
     print("""
-#####    #######  ##   ##   #####   ##   ##  #######  ######   
- ## ##    ##   #  ##   ##  ### ###  ##   ##   ##   #   ##  ##  
- ##  ##   ##      ##   ##  ##   ##  ##   ##   ##       ##  ##  
- ##  ##   ####     ## ##   ##   ##   ## ##    ####     #####   
- ##  ##   ##       ## ##   ##   ##   ## ##    ##       ## ##   
- ## ##    ##   #    ###    ### ###    ###     ##   #   ## ##   
-#####    #######    ###     #####     ###    #######  #### ##   V4.3
+\033[1;34m ░▒▓███████▓▒░░▒▓██████▓▒░ ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓███████▓▒░ ░▒▓██████▓▒░  
+\033[1;34m░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+\033[1;34m░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+\033[1;34m ░▒▓██████▓▒░░▒▓████████▓▒░▒▓█▓▒▒▓███▓▒░▒▓████████▓▒░▒▓███████▓▒░░▒▓████████▓▒░ 
+\033[1;34m       ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+\033[1;34m       ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+\033[1;34m░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░  V1.0\033[1;m
 
- \033[1;32m Author: kdandy | Repo: https://github.com/kdandy/devtools\033[1;m
- \033[1;32m Basic Pentesting Tools \033[1;m
+ \033[1;34m Author: kdandy | Repo: https://github.com/kdandy/devtools\033[1;m
+ \033[1;34m Basic Pentesting Tools \033[1;m
     """)
 
 def display_menu():
-    print("\n\033[1;32mSelect the features you want to run:\033[1;m")
-    print("\033[1;32m1.\033[1;m Search for subdomains")
-    print("\033[1;32m2.\033[1;m Spam GET requests to target URL")
-    print("\033[1;32m3.\033[1;m Full Port Scan")
-    print("\033[1;32m4.\033[1;m Directory and Sensitive File Bruteforcing")
-    print("\033[1;32m5.\033[1;m SQL Injection Testing")
-    print("\033[1;32m6.\033[1;m XSS Testing")
-    print("\033[1;32m7.\033[1;m Header and SSL/TLS Inspection")
-    print("\033[1;32m8.\033[1;m CSRF Testing")
-    print("\033[1;32m9.\033[1;m Reverse DNS Lookup")
-    print("\033[1;32m10.\033[1;m DNS Zone Transfer Testing")
-    print("\033[1;32m11.\033[1;m Open Redirect Testing")
-    print("\033[1;32m12.\033[1;m Command Injection Testing")
-    print("\033[1;32m13.\033[1;m CVE Exploit Checker")
-    print("\033[1;32m14.\033[1;m Exit")
-    choice = input("\033[1;32mEnter options (1-14): \033[1;m")
+    print("\n\033[1;34mSelect the features you want to run:\033[1;m")
+    print("\033[1;34m1.\033[1;m Search for subdomains")
+    print("\033[1;34m2.\033[1;m Spam GET requests to target URL")
+    print("\033[1;34m3.\033[1;m Full Port Scan")
+    print("\033[1;34m4.\033[1;m Directory and Sensitive File Bruteforcing")
+    print("\033[1;34m5.\033[1;m SQL Injection Testing")
+    print("\033[1;34m6.\033[1;m XSS Testing")
+    print("\033[1;34m7.\033[1;m Header and SSL/TLS Inspection")
+    print("\033[1;34m8.\033[1;m CSRF Testing")
+    print("\033[1;34m9.\033[1;m Reverse DNS Lookup")
+    print("\033[1;34m10.\033[1;m DNS Zone Transfer Testing")
+    print("\033[1;34m11.\033[1;m Open Redirect Testing")
+    print("\033[1;34m12.\033[1;m Command Injection Testing")
+    print("\033[1;34m13.\033[1;m CVE Exploit Checker")
+    print("\033[1;34m14.\033[1;m Exit")
+    choice = input("\033[1;34mEnter options (1-14): \033[1;m")
     return choice
 
 def url_validator(url):
