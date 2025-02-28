@@ -1,6 +1,6 @@
-# DevTools Code Documentation
+# RedOps Code Documentation
 
-DevTools is a multifunctional tool designed for basic security testing on web applications and servers. The tool allows users to execute various testing functions for reconnaissance and vulnerability assessment, including:
+RedOps is a multifunctional tool designed for basic security testing on web applications and servers. The tool allows users to execute various testing functions for reconnaissance and vulnerability assessment, including:
 
 1. **Subdomain Discovery**: Searches for subdomains associated with a given domain using the `crt.sh` database.
 2. **GET Request Flooding**: Sends multiple repeated GET requests to a specified URL for testing request handling and rate-limiting detection.
