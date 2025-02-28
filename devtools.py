@@ -21,7 +21,7 @@ def display_banner():
 \033[1;34m       ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
 \033[1;34m░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░  V1.0\033[1;m
 
- \033[1;34m Author: kdandy | Repo: https://github.com/kdandy/devtools\033[1;m
+ \033[1;34m Author: kdandy | Repo: https://github.com/kdandy/RedOps\033[1;m
  \033[1;34m Basic Pentesting Tools \033[1;m
     """)
 
