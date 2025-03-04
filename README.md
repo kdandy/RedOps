@@ -107,8 +107,8 @@ This tool requires Python 3.7 or higher and the `aiohttp` library. Make sure Pyt
 ### Installation
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/kdandy/devtools.git
-   cd devtools
+   git clone https://github.com/kdandy/redops.git
+   cd RedOps
 2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
@@ -127,7 +127,7 @@ This tool requires Python 3.7 or higher and the `aiohttp` library. Make sure Pyt
 ## Usage
 1. **Run the program**:
    ```bash
-   python3 devtools.py
+   python3 redops.py
 
 ## LICENSE
 
