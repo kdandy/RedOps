@@ -12,22 +12,20 @@ from concurrent.futures import ThreadPoolExecutor
 os.makedirs("output", exist_ok=True)
 
 def display_banner():
-    print("\033[1;34m")
-    print("""
- ______              _____             
-(_____ \            / ___ \            
- _____) ) ____  ___| |   | |____   ___ 
-(_____ ( / _  )/___) |   | |  _ \ /___)
-      | ( (/ /|___ | |___| | | | |___ |
-      |_|\____|___/ \_____/| ||_/(___/ 
-                           |_|         
+    print(r"""
+\033[1;34m
+ ______           _  _____             
+(_____ \         | |/ ___ \            
+ _____) ) ____ _ | | |   | |____   ___ 
+(_____ ( / _  ) || | |   | |  _ \ /___)
+      | ( (/ ( (_| | |___| | | | |___ |
+      |_|\____)____|\_____/| ||_/(___/ 
+                           |_|                
 
  Author: kdandy | Repo: https://github.com/kdandy/RedOps
  Basic Pentesting Tools
+\033[1;m
     """)
-    print("\033[1;m")
-
-display_banner()
 
 def display_menu():
     print("\n\033[1;34mSelect the features you want to run:\033[1;m")
