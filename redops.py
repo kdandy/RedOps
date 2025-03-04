@@ -12,20 +12,17 @@ from concurrent.futures import ThreadPoolExecutor
 os.makedirs("output", exist_ok=True)
 
 def display_banner():
-    print("\033[1;34m")
-    print("""
- ______           _  _____             
-(_____ \         | |/ ___ \            
- _____) ) ____ _ | | |   | |____   ___ 
-(_____ ( / _  ) || | |   | |  _ \ /___)
-      | ( (/ ( (_| | |___| | | | |___ |
-      |_|\____)____|\_____/| ||_/(___/ 
-                           |_|                
-
- Author: kdandy | Repo: https://github.com/kdandy/RedOps
- Basic Pentesting Tools
-    """)
-    print("\033[1;m")
+    print("\033[1;34m ______           _  _____             \033[1;m")
+    print("\033[1;34m(_____ \\         | |/ ___ \\            \033[1;m")
+    print("\033[1;34m _____) ) ____ _ | | |   | |____   ___ \033[1;m")
+    print("\033[1;34m(_____ ( / _  ) || | |   | |  _ \\ /___)\033[1;m")
+    print("\033[1;34m      | ( (/ ( (_| | |___| | | | |___ |\033[1;m")
+    print("\033[1;34m      |_|\____)____|\_____/| ||_/(___/ \033[1;m")
+    print("\033[1;34m                           |_|         \033[1;m")
+    
+    print("\033[1;34m V1.0\033[1;m")
+    print("\033[1;34m Author: kdandy | Repo: https://github.com/kdandy/RedOps\033[1;m")
+    print("\033[1;34m Basic Pentesting Tools \033[1;m")
 
 def display_menu():
     print("\n\033[1;34mSelect the features you want to run:\033[1;m")
