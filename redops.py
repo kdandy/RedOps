@@ -12,8 +12,8 @@ from concurrent.futures import ThreadPoolExecutor
 os.makedirs("output", exist_ok=True)
 
 def display_banner():
-    print(r"""
-\033[1;34m
+    print("\033[1;34m")
+    print("""
  ______           _  _____             
 (_____ \         | |/ ___ \            
  _____) ) ____ _ | | |   | |____   ___ 
@@ -24,8 +24,8 @@ def display_banner():
 
  Author: kdandy | Repo: https://github.com/kdandy/RedOps
  Basic Pentesting Tools
-\033[1;m
     """)
+    print("\033[1;m")
 
 def display_menu():
     print("\n\033[1;34mSelect the features you want to run:\033[1;m")
